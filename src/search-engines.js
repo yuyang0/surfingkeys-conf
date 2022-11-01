@@ -1347,4 +1347,113 @@ completions.yt.callback = (response) => JSON.parse(response.text).items
     }
   }).filter((s) => s !== null)
 
+// Baidu
+completions.bd = {
+  alias: "bd",
+  name: "baidu",
+  search: "https://www.baidu.com/s?wd=",
+  compl: "https://www.baidu.com/sugrec?ie=utf-8&json=1&prod=pc&from=pc_web&wd=",
+}
+
+completions.bd.callback = (response) => JSON.parse(response.text).g.map((s) => s.q)
+
+// Bing
+completions.bi = {
+  alias: "bi",
+  name: "bing",
+  search: "https://www.bing.com/search?setmkt=en-us&setlang=en-us&q=",
+  compl: "https://api.bing.com/osjson.aspx?query=",
+}
+
+completions.bi.callback = (response) => JSON.parse(response.text)[1]
+
+// Douban
+completions.db = {
+  alias: "db",
+  name: "douban",
+  search: "https://www.douban.com/search?source=suggest&q=",
+  compl: "https://www.douban.com/j/search_suggest?q=",
+}
+
+completions.db.callback = (response) => {
+  const res = JSON.parse(response.text)
+  const cards = res.cards;
+  const words = res.words;
+  let cardItems = cards.map((card) => {
+    const url = card.url;
+    return createSuggestionItem(`
+      <div style="padding:5px;display:grid;grid-template-columns:60px 1fr;grid-gap:15px">
+        <img style="width:60px" src="${card.cover_url}" alt="${escapeHTML(card.title)}">
+        <div>
+          <div class="title"><strong>${card.title}</strong> ${card.year ? `${card.year}` : ''}</div>
+          ${card.card_subtitle}
+        </div>
+      </div>
+
+    `, { url })
+  })
+  return cardItems.concat(words);
+}
+
+// Weibo
+completions.wb = {
+  alias: "wb",
+  name: "weibo",
+  search: "https://s.weibo.com/weibo/",
+  compl: "https://s.weibo.com/Ajax_Search/suggest?where=weibo&type=weibo&key=",
+}
+
+completions.wb.callback = (response) => {
+  const res = JSON.parse(response.text)
+  if (res.code !== 100000) {
+    return [];
+  }
+  return res.data.map((d) => {
+    return d.suggestion;
+  });
+}
+
+// Weixin
+completions.wx = {
+  alias: "wx",
+  name: "weixin",
+  search: "https://weixin.sogou.com/weixin?type=2&query=",
+  compl: "https://weixin.sogou.com/sugg/ajaj_json.jsp?type=wxart&pr=web&key=",
+}
+
+completions.wx.callback = (response) => {
+  const sIdx = response.text.indexOf("[");
+  const eIdx = response.text.lastIndexOf("]");
+  const res = JSON.parse(response.text.substring(sIdx, eIdx + 1))
+  return res[1];
+}
+
+// Douyin
+completions.dy = {
+  alias: "dy",
+  name: "douyin",
+  search: "https://www.douyin.com/search/",
+  compl: "https://www.douyin.com/aweme/v1/web/search/sug/?device_platform=webapp&aid=6383&channel=channel_pc_web&source=aweme_video_web&keyword=",
+}
+
+completions.dy.callback = (response) => JSON.parse(response.text).sug_list.map((s) => s.content)
+
+// SMZDM
+completions.sm = {
+  alias: "sm",
+  name: "smzdm",
+  search: "https://search.smzdm.com/?c=home&s=",
+  compl: "https://search.smzdm.com/ajax/suggestion/suggestion_jsonp?callback=jQuery&keyword=",
+}
+
+completions.sm.callback = (response) => {
+  const sIdx = response.text.indexOf("{");
+  const eIdx = response.text.lastIndexOf("}");
+  const res = JSON.parse(response.text.substring(sIdx, eIdx + 1))
+  if (res.error_code !== 0) {
+    return [];
+  }
+  return res.data;
+}
+
 export default completions
