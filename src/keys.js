@@ -34,31 +34,47 @@ const unmaps = {
 
 const maps = {}
 
+// keybindings for searchSelectedWith
+maps.searchSelectedWith = [
+  {
+    "alias": "go",
+    "key": "g",
+  },
+  {
+    "alias": "dd",
+    "key": "d",
+  },
+  {
+    "alias": "bd",
+    "key": "b",
+  },
+]
+
 maps.global = [
   {
-    alias:       "F",
-    map:         "gf",
-    category:    categories.mouseClick,
+    alias: "F",
+    map: "gf",
+    category: categories.mouseClick,
     description: "Open a link in non-active new tab",
   },
   {
-    alias:       "zf",
-    category:    categories.mouseClick,
+    alias: "zf",
+    category: categories.mouseClick,
     description: "Open link URL in vim editor",
-    callback:    actions.previewLink,
+    callback: actions.previewLink,
   },
-  {
-    alias:       "w",
-    map:         "k",
-    category:    categories.scroll,
-    description: "Scroll up",
-  },
-  {
-    alias:       "s",
-    map:         "j",
-    category:    categories.scroll,
-    description: "Scroll down",
-  },
+  // {
+  //   alias:       "w",
+  //   map:         "k",
+  //   category:    categories.scroll,
+  //   description: "Scroll up",
+  // },
+  // {
+  //   alias:       "s",
+  //   map:         "j",
+  //   category:    categories.scroll,
+  //   description: "Scroll down",
+  // },
   {
     alias:       "K",
     map:         "e",

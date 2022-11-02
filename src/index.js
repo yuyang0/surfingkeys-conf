@@ -11,6 +11,8 @@ const {
   Front,
   removeSearchAlias,
   addSearchAlias,
+  searchSelectedWith,
+  vmapkey,
 } = api
 
 const registerKey = (domain, mapObj, siteleader) => {
@@ -111,6 +113,14 @@ const main = async () => {
     const { keys } = conf
     const { maps, aliases = {} } = keys
     registerKeys(maps, aliases, conf.siteleader)
+
+    maps.searchSelectedWith.map((entry) => {
+      const se = conf.searchEngines[entry.alias]["search"]
+      const name = conf.searchEngines[entry.alias]["name"]
+      const category = categories.searchSelectedWith;
+      const fullDescription = `#${category} search selected text with ${name}`
+      vmapkey('s' + entry.key, fullDescription, () => { searchSelectedWith(se, false, false, entry.alias) });
+    })
   }
 }
 
