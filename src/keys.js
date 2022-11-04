@@ -361,6 +361,11 @@ maps["www.google.com"] = [
     ),
   },
   {
+    alias: "f",
+    description: "Open search result",
+    callback: () => util.createHints(googleSearchResultSelector),
+  },
+  {
     alias: "d",
     description: "Open search in DuckDuckGo",
     callback: actions.go.ddg,
@@ -415,6 +420,11 @@ maps["duckduckgo.com"] = [
       ddgSelector,
       actions.openAnchor({ newTab: true, active: false }),
     ),
+  },
+  {
+    alias: "f",
+    description: "Open search result",
+    callback: () => util.createHints(ddgSelector),
   },
   {
     leader: "",
@@ -1280,6 +1290,11 @@ maps["baidu.com"] = [
     ),
   },
   {
+    alias: "f",
+    description: "Open search result",
+    callback: () => util.createHints(BaiduResultSelector),
+  },
+  {
     alias: "g",
     description: "Open search in Google",
     callback: actions.baidu.goog,
@@ -1312,6 +1327,11 @@ maps["bing.com"] = [
       bingResultSelector,
       actions.openAnchor({ newTab: true, active: false }),
     ),
+  },
+  {
+    alias: "f",
+    description: "Open search result",
+    callback: () => util.createHints(bingResultSelector),
   },
   {
     alias: "g",
