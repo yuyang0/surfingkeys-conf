@@ -32,8 +32,8 @@ const googleCustomSearch = (opts) => {
   }
   return {
     favicon,
-    compl:    `https://www.googleapis.com/customsearch/v1?key=${priv.keys.google_cs}&cx=${priv.keys[`google_cx_${opts.alias}`]}&q=`,
-    search:   `https://cse.google.com/cse/publicurl?cx=${priv.keys[`google_cx_${opts.alias}`]}&q=`,
+    compl: `https://www.googleapis.com/customsearch/v1?key=${priv.keys.google_cs}&cx=${priv.keys[`google_cx_${opts.alias}`]}&q=`,
+    search: `https://cse.google.com/cse/publicurl?cx=${priv.keys[`google_cx_${opts.alias}`]}&q=`,
     callback: (response) => {
       const res = JSON.parse(response.text).items
       return res.map((s) => createSuggestionItem(`
@@ -52,17 +52,17 @@ const googleCustomSearch = (opts) => {
 
 // Arch Linux official repos
 completions.al = googleCustomSearch({
-  alias:  "al",
-  name:   "archlinux",
+  alias: "al",
+  name: "archlinux",
   search: "https://www.archlinux.org/packages/?arch=x86_64&q=",
 })
 
 // Arch Linux AUR
 completions.au = {
-  alias:   "au",
-  name:    "AUR",
-  search:  "https://aur.archlinux.org/packages/?O=0&SeB=nd&outdated=&SB=v&SO=d&PP=100&do_Search=Go&K=",
-  compl:   "https://aur.archlinux.org/rpc?v=5&type=suggest&arg=",
+  alias: "au",
+  name: "AUR",
+  search: "https://aur.archlinux.org/packages/?O=0&SeB=nd&outdated=&SB=v&SO=d&PP=100&do_Search=Go&K=",
+  compl: "https://aur.archlinux.org/rpc?v=5&type=suggest&arg=",
 }
 
 completions.au.callback = (response) => {
@@ -72,18 +72,18 @@ completions.au.callback = (response) => {
 
 // Arch Linux Wiki
 completions.aw = {
-  alias:  "aw",
-  name:   "archwiki",
+  alias: "aw",
+  name: "archwiki",
   search: "https://wiki.archlinux.org/index.php?go=go&search=",
-  compl:  "https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
+  compl: "https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
 }
 
 completions.aw.callback = (response) => JSON.parse(response.text)[1]
 
 // Arch Linux Forums
 completions.af = googleCustomSearch({
-  alias:  "af",
-  name:   "archforums",
+  alias: "af",
+  name: "archforums",
   domain: "bbs.archlinux.org",
 })
 
@@ -115,11 +115,11 @@ completions.af = googleCustomSearch({
 
 // AlternativeTo
 completions.at = {
-  alias:  "at",
-  name:   "alternativeTo",
+  alias: "at",
+  name: "alternativeTo",
   search: "https://alternativeto.net/browse/search/?q=",
-  compl:  `https://zidpns2vb0-dsn.algolia.net/1/indexes/fullitems?x-algolia-application-id=ZIDPNS2VB0&x-algolia-api-key=${priv.keys.alternativeTo}&attributesToRetrieve=Name,UrlName,TagLine,Description,Likes,HasIcon,IconId,IconExtension,InternalUrl&query=`,
-  priv:   true,
+  compl: `https://zidpns2vb0-dsn.algolia.net/1/indexes/fullitems?x-algolia-application-id=ZIDPNS2VB0&x-algolia-api-key=${priv.keys.alternativeTo}&attributesToRetrieve=Name,UrlName,TagLine,Description,Likes,HasIcon,IconId,IconExtension,InternalUrl&query=`,
+  priv: true,
 }
 
 completions.at.callback = async (response) => {
@@ -151,8 +151,8 @@ completions.at.callback = async (response) => {
 
 // Chrome Webstore
 completions.cs = googleCustomSearch({
-  alias:  "cs",
-  name:   "chromestore",
+  alias: "cs",
+  name: "chromestore",
   search: "https://chrome.google.com/webstore/search/",
 })
 
@@ -168,14 +168,14 @@ const parseFirefoxAddonsRes = (response) => JSON.parse(response.text).results.ma
   name = escapeHTML(name)
   let prefix = ""
   switch (s.type) {
-  case "extension":
-    prefix += "🧩 "
-    break
-  case "statictheme":
-    prefix += "🖌 "
-    break
-  default:
-    break
+    case "extension":
+      prefix += "🧩 "
+      break
+    case "statictheme":
+      prefix += "🖌 "
+      break
+    default:
+      break
   }
 
   return createSuggestionItem(`
@@ -190,67 +190,67 @@ const parseFirefoxAddonsRes = (response) => JSON.parse(response.text).results.ma
 
 // Firefox Addons
 completions.fa = {
-  alias:    "fa",
-  name:     "firefox-addons",
-  search:   `https://addons.mozilla.org/${locale}/firefox/search/?q=`,
-  compl:    "https://addons.mozilla.org/api/v4/addons/autocomplete/?q=",
+  alias: "fa",
+  name: "firefox-addons",
+  search: `https://addons.mozilla.org/${locale}/firefox/search/?q=`,
+  compl: "https://addons.mozilla.org/api/v4/addons/autocomplete/?q=",
   callback: parseFirefoxAddonsRes,
 }
 
 // Firefox Themes
 completions.ft = {
-  alias:    "ft",
-  name:     "firefox-themes",
-  search:   `https://addons.mozilla.org/${locale}/firefox/search/?type=statictheme&q=`,
-  compl:    "https://addons.mozilla.org/api/v4/addons/autocomplete/?type=statictheme&q=",
+  alias: "ft",
+  name: "firefox-themes",
+  search: `https://addons.mozilla.org/${locale}/firefox/search/?type=statictheme&q=`,
+  compl: "https://addons.mozilla.org/api/v4/addons/autocomplete/?type=statictheme&q=",
   callback: parseFirefoxAddonsRes,
 }
 
 // Firefox Extensions
 completions.fe = {
-  alias:    "fe",
-  name:     "firefox-extensions",
-  search:   `https://addons.mozilla.org/${locale}/firefox/search/?type=extension&q=`,
-  compl:    "https://addons.mozilla.org/api/v4/addons/autocomplete/?type=extension&q=",
+  alias: "fe",
+  name: "firefox-extensions",
+  search: `https://addons.mozilla.org/${locale}/firefox/search/?type=extension&q=`,
+  compl: "https://addons.mozilla.org/api/v4/addons/autocomplete/?type=extension&q=",
   callback: parseFirefoxAddonsRes,
 }
 
 // OWASP Wiki
 completions.ow = {
-  alias:  "ow",
-  name:   "owasp",
+  alias: "ow",
+  name: "owasp",
   search: "https://www.owasp.org/index.php?go=go&search=",
-  compl:  "https://www.owasp.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
+  compl: "https://www.owasp.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
 }
 
 completions.ow.callback = (response) => JSON.parse(response.text)[1]
 
 // StackOverflow
 completions.so = {
-  alias:  "so",
-  name:   "stackoverflow",
+  alias: "so",
+  name: "stackoverflow",
   search: "https://stackoverflow.com/search?q=",
-  compl:  "https://api.stackexchange.com/2.2/search/advanced?pagesize=10&order=desc&sort=relevance&site=stackoverflow&q=",
+  compl: "https://api.stackexchange.com/2.2/search/advanced?pagesize=10&order=desc&sort=relevance&site=stackoverflow&q=",
 }
 
 completions.so.callback = (response) => JSON.parse(response.text).items.map((s) => createURLItem(`[${s.score}] ${s.title}`, s.link, { query: false }))
 
 // StackExchange - all sites
 completions.se = {
-  alias:  "se",
-  name:   "stackexchange",
+  alias: "se",
+  name: "stackexchange",
   search: "https://stackexchange.com/search?q=",
-  compl:  "https://duckduckgo.com/ac/?q=!stackexchange%20",
+  compl: "https://duckduckgo.com/ac/?q=!stackexchange%20",
 }
 
 completions.se.callback = (response) => JSON.parse(response.text).map((r) => r.phrase.replace(/^!stackexchange /, ""))
 
 // DockerHub repo search
 completions.dh = {
-  alias:  "dh",
-  name:   "dockerhub",
+  alias: "dh",
+  name: "dockerhub",
   search: "https://hub.docker.com/search/?page=1&q=",
-  compl:  "https://hub.docker.com/v2/search/repositories/?page_size=20&query=",
+  compl: "https://hub.docker.com/v2/search/repositories/?page_size=20&query=",
 }
 
 completions.dh.callback = (response) => JSON.parse(response.text).results.map((s) => {
@@ -272,10 +272,10 @@ completions.dh.callback = (response) => JSON.parse(response.text).results.map((s
 
 // GitHub
 completions.gh = {
-  alias:  "gh",
-  name:   "github",
+  alias: "gh",
+  name: "github",
   search: "https://github.com/search?q=",
-  compl:  "https://api.github.com/search/repositories?sort=stars&order=desc&q=",
+  compl: "https://api.github.com/search/repositories?sort=stars&order=desc&q=",
 }
 
 completions.gh.callback = (response) => JSON.parse(response.text).items.map((s) => {
@@ -288,10 +288,10 @@ completions.gh.callback = (response) => JSON.parse(response.text).items.map((s) 
 
 // Domainr domain search
 completions.do = {
-  alias:  "do",
-  name:   "domainr",
+  alias: "do",
+  name: "domainr",
   search: "https://domainr.com/?q=",
-  compl:  "https://5jmgqstc3m.execute-api.us-west-1.amazonaws.com/v1/domainr?q=",
+  compl: "https://5jmgqstc3m.execute-api.us-west-1.amazonaws.com/v1/domainr?q=",
 }
 
 completions.do.callback = (response) => Object.entries(JSON.parse(response.text))
@@ -299,15 +299,15 @@ completions.do.callback = (response) => Object.entries(JSON.parse(response.text)
     let color = "inherit"
     let symbol = "<strong>?</strong> "
     switch (data.summary) {
-    case "inactive":
-      color = "#23b000"
-      symbol = "✔ "
-      break
-    case "unknown":
-      break
-    default:
-      color = "#ff4d00"
-      symbol = "✘ "
+      case "inactive":
+        color = "#23b000"
+        symbol = "✔ "
+        break
+      case "unknown":
+        break
+      default:
+        color = "#ff4d00"
+        symbol = "✘ "
     }
     return createSuggestionItem(
       `<div><div class="title" style="color:${color}"><strong>${symbol}${escapeHTML(domain)}</strong></div></div>`,
@@ -317,10 +317,10 @@ completions.do.callback = (response) => Object.entries(JSON.parse(response.text)
 
 // Vim Wiki
 completions.vw = {
-  alias:  "vw",
-  name:   "vimwiki",
+  alias: "vw",
+  name: "vimwiki",
   search: "https://vim.fandom.com/wiki/Special:Search?query=",
-  compl:  "https://vim.fandom.com/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
+  compl: "https://vim.fandom.com/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
 }
 
 completions.vw.callback = (response) => JSON.parse(response.text)[1]
@@ -330,40 +330,40 @@ completions.vw.callback = (response) => JSON.parse(response.text)[1]
 
 // Amazon
 completions.az = {
-  alias:  "az",
-  name:   "amazon",
+  alias: "az",
+  name: "amazon",
   search: "https://smile.amazon.com/s/?field-keywords=",
-  compl:  "https://completion.amazon.com/search/complete?method=completion&mkt=1&search-alias=aps&q=",
+  compl: "https://completion.amazon.com/search/complete?method=completion&mkt=1&search-alias=aps&q=",
 }
 
 completions.az.callback = (response) => JSON.parse(response.text)[1]
 
 // Craigslist
 completions.cl = {
-  alias:  "cl",
-  name:   "craigslist",
+  alias: "cl",
+  name: "craigslist",
   search: "https://www.craigslist.org/search/sss?query=",
-  compl:  "https://www.craigslist.org/suggest?v=12&type=search&cat=sss&area=1&term=",
+  compl: "https://www.craigslist.org/suggest?v=12&type=search&cat=sss&area=1&term=",
 }
 
 completions.cl.callback = (response) => JSON.parse(response.text)
 
 // EBay
 completions.eb = {
-  alias:  "eb",
-  name:   "ebay",
+  alias: "eb",
+  name: "ebay",
   search: "https://www.ebay.com/sch/i.html?_nkw=",
-  compl:  "https://autosug.ebay.com/autosug?callback=0&sId=0&kwd=",
+  compl: "https://autosug.ebay.com/autosug?callback=0&sId=0&kwd=",
 }
 
 completions.eb.callback = (response) => JSON.parse(response.text).res.sug
 
 // Yelp
 completions.yp = {
-  alias:  "yp",
-  name:   "yelp",
+  alias: "yp",
+  name: "yelp",
   search: "https://www.yelp.com/search?find_desc=",
-  compl:  "https://www.yelp.com/search_suggest/v2/prefetch?prefix=",
+  compl: "https://www.yelp.com/search_suggest/v2/prefetch?prefix=",
 }
 
 completions.yp.callback = (response) => {
@@ -382,11 +382,11 @@ completions.yp.callback = (response) => {
 
 // ****** General References, Calculators & Utilities ****** //
 completions.un = {
-  alias:  "un",
-  name:   "unicode",
+  alias: "un",
+  name: "unicode",
   search: "https://unicode-table.com/en/search/?q=",
-  compl:  `${localServer}/s/unicode?q=`,
-  local:  true,
+  compl: `${localServer}/s/unicode?q=`,
+  local: true,
 }
 
 completions.un.callback = (response) => {
@@ -404,7 +404,7 @@ completions.un.callback = (response) => {
 
 const parseDatamuseRes = (res, o = {}) => {
   const opts = {
-    maxDefs:  -1,
+    maxDefs: -1,
     ellipsis: false,
   }
   Object.assign(opts, o)
@@ -435,13 +435,13 @@ const parseDatamuseRes = (res, o = {}) => {
 
 // Dictionary
 completions.de = {
-  alias:  "de",
-  name:   "define",
+  alias: "de",
+  name: "define",
   search: "http://onelook.com/?w=",
-  compl:  "https://api.datamuse.com/words?md=d&sp=%s*",
-  opts:   {
-    maxDefs:     16,
-    ellipsis:    true,
+  compl: "https://api.datamuse.com/words?md=d&sp=%s*",
+  opts: {
+    maxDefs: 16,
+    ellipsis: true,
     wordBaseURL: "http://onelook.com/?w=",
   },
 }
@@ -453,13 +453,13 @@ completions.de.callback = (response) => {
 
 // Thesaurus
 completions.th = {
-  alias:  "th",
-  name:   "thesaurus",
+  alias: "th",
+  name: "thesaurus",
   search: "https://www.onelook.com/thesaurus/?s=",
-  compl:  "https://api.datamuse.com/words?md=d&ml=%s",
-  opts:   {
-    maxDefs:     3,
-    ellipsis:    true,
+  compl: "https://api.datamuse.com/words?md=d&ml=%s",
+  opts: {
+    maxDefs: 3,
+    ellipsis: true,
     wordBaseURL: "http://onelook.com/thesaurus/?s=",
   },
 }
@@ -471,10 +471,10 @@ completions.th.callback = (response) => {
 
 // Wikipedia
 completions.wp = {
-  alias:  "wp",
-  name:   "wikipedia",
+  alias: "wp",
+  name: "wikipedia",
   search: "https://en.wikipedia.org/w/index.php?search=",
-  compl:  "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=prefixsearch&prop=info|pageprops%7Cpageimages%7Cdescription&redirects=&ppprop=displaytitle&piprop=thumbnail&pithumbsize=100&pilimit=6&inprop=url&gpssearch=",
+  compl: "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=prefixsearch&prop=info|pageprops%7Cpageimages%7Cdescription&redirects=&ppprop=displaytitle&piprop=thumbnail&pithumbsize=100&pilimit=6&inprop=url&gpssearch=",
 }
 
 completions.wp.callback = (response) => Object.values(JSON.parse(response.text).query.pages)
@@ -496,19 +496,19 @@ completions.wp.callback = (response) => Object.values(JSON.parse(response.text).
 
 // Wikipedia - Simple English version
 completions.ws = {
-  alias:    "ws",
-  name:     "wikipedia-simple",
-  search:   "https://simple.wikipedia.org/w/index.php?search=",
-  compl:    "https://simple.wikipedia.org/w/api.php?action=query&format=json&generator=prefixsearch&prop=info|pageprops%7Cpageimages%7Cdescription&redirects=&ppprop=displaytitle&piprop=thumbnail&pithumbsize=100&pilimit=6&inprop=url&gpssearch=",
+  alias: "ws",
+  name: "wikipedia-simple",
+  search: "https://simple.wikipedia.org/w/index.php?search=",
+  compl: "https://simple.wikipedia.org/w/api.php?action=query&format=json&generator=prefixsearch&prop=info|pageprops%7Cpageimages%7Cdescription&redirects=&ppprop=displaytitle&piprop=thumbnail&pithumbsize=100&pilimit=6&inprop=url&gpssearch=",
   callback: completions.wp.callback,
 }
 
 // Wiktionary
 completions.wt = {
-  alias:  "wt",
-  name:   "wiktionary",
+  alias: "wt",
+  name: "wiktionary",
   search: "https://en.wiktionary.org/w/index.php?search=",
-  compl:  "https://en.wiktionary.org/w/api.php?action=query&format=json&generator=prefixsearch&gpssearch=",
+  compl: "https://en.wiktionary.org/w/api.php?action=query&format=json&generator=prefixsearch&gpssearch=",
 }
 
 completions.wt.callback = (response) => Object.values(JSON.parse(response.text).query.pages)
@@ -516,11 +516,11 @@ completions.wt.callback = (response) => Object.values(JSON.parse(response.text).
 
 // WolframAlpha
 completions.wa = {
-  alias:  "wa",
-  name:   "wolframalpha",
+  alias: "wa",
+  name: "wolframalpha",
   search: "http://www.wolframalpha.com/input/?i=",
-  compl:  `http://api.wolframalpha.com/v2/query?appid=${priv.keys.wolframalpha}&format=plaintext,image&output=json&reinterpret=true&input=%s`,
-  priv:   true,
+  compl: `http://api.wolframalpha.com/v2/query?appid=${priv.keys.wolframalpha}&format=plaintext,image&output=json&reinterpret=true&input=%s`,
+  priv: true,
 }
 
 completions.wa.callback = (response, { query }) => {
@@ -559,9 +559,9 @@ completions.wa.callback = (response, { query }) => {
   const results = []
   res.pods.forEach((p) => {
     const result = {
-      title:  escapeHTML(p.title),
+      title: escapeHTML(p.title),
       values: [],
-      url:    `http://www.wolframalpha.com/input/?i=${encodeURIComponent(query)}`,
+      url: `http://www.wolframalpha.com/input/?i=${encodeURIComponent(query)}`,
     }
     if (p.numsubpods > 0) {
       if (p.subpods[0].plaintext) {
@@ -635,23 +635,23 @@ const parseCrunchbase = (response, parse) => {
 
 // Crunchbase Organization Search
 completions.co = {
-  alias:  "co",
-  name:   "crunchbase-orgs",
+  alias: "co",
+  name: "crunchbase-orgs",
   search: "https://www.crunchbase.com/textsearch?q=",
-  compl:  `https://api.crunchbase.com/v/3/odm_organizations?user_key=${priv.keys.crunchbase}&query=%s`,
-  priv:   true,
+  compl: `https://api.crunchbase.com/v/3/odm_organizations?user_key=${priv.keys.crunchbase}&query=%s`,
+  priv: true,
 }
 
 completions.co.callback = (response) => parseCrunchbase(response, (org) => {
   const r = org.properties
   const p = {
-    name:   escapeHTML(r.name),
+    name: escapeHTML(r.name),
     domain: r.domain !== null ? escapeHTML(r.domain).replace(/\/$/, "") : null,
-    desc:   escapeHTML(r.short_description),
-    role:   escapeHTML(r.primary_role),
-    img:    cbDefaultIcon,
-    loc:    "",
-    url:    `https://www.crunchbase.com/${encodeURIComponent(r.web_path)}`,
+    desc: escapeHTML(r.short_description),
+    role: escapeHTML(r.primary_role),
+    img: cbDefaultIcon,
+    loc: "",
+    url: `https://www.crunchbase.com/${encodeURIComponent(r.web_path)}`,
   }
 
   p.loc += (r.city_name !== null) ? escapeHTML(r.city_name) : ""
@@ -671,11 +671,11 @@ completions.co.callback = (response) => parseCrunchbase(response, (org) => {
 
 // Crunchbase People Search
 completions.cp = {
-  alias:  "cp",
-  name:   "crunchbase-people",
+  alias: "cp",
+  name: "crunchbase-people",
   search: "https://www.crunchbase.com/app/search/?q=",
-  compl:  `https://api.crunchbase.com/v/3/odm_people?user_key=${priv.keys.crunchbase}&query=%s`,
-  priv:   true,
+  compl: `https://api.crunchbase.com/v/3/odm_people?user_key=${priv.keys.crunchbase}&query=%s`,
+  priv: true,
 }
 
 completions.cp.callback = (response) => parseCrunchbase(response, (person) => {
@@ -683,10 +683,10 @@ completions.cp.callback = (response) => parseCrunchbase(response, (person) => {
   const p = {
     name: `${escapeHTML(r.first_name)} ${escapeHTML(r.last_name)}`,
     desc: "",
-    img:  cbDefaultIcon,
+    img: cbDefaultIcon,
     role: "",
-    loc:  "",
-    url:  `https://www.crunchbase.com/${encodeURIComponent(r.web_path)}`,
+    loc: "",
+    url: `https://www.crunchbase.com/${encodeURIComponent(r.web_path)}`,
   }
 
   p.desc += (r.title !== null) ? escapeHTML(r.title) : ""
@@ -713,110 +713,110 @@ completions.cp.callback = (response) => parseCrunchbase(response, (person) => {
 
 // DuckDuckGo
 completions.dd = {
-  alias:  "dd",
-  name:   "duckduckgo",
+  alias: "dd",
+  name: "duckduckgo",
   search: "https://duckduckgo.com/?q=",
-  compl:  "https://duckduckgo.com/ac/?q=",
+  compl: "https://duckduckgo.com/ac/?q=",
 }
 
 completions.dd.callback = (response) => JSON.parse(response.text).map((r) => r.phrase)
 
 // DuckDuckGo - I'm Feeling Lucky
 completions.D = {
-  alias:    "D",
-  name:     "duckduckgo-lucky",
-  search:   "https://duckduckgo.com/?q=\\",
-  compl:    "https://duckduckgo.com/ac/?q=\\",
+  alias: "D",
+  name: "duckduckgo-lucky",
+  search: "https://duckduckgo.com/?q=\\",
+  compl: "https://duckduckgo.com/ac/?q=\\",
   callback: completions.dd.callback,
 }
 
 // DuckDuckGo Images
 completions.di = {
-  alias:    "di",
-  name:     "duckduckgo-images",
-  search:   "https://duckduckgo.com/?ia=images&iax=images&q=",
-  compl:    "https://duckduckgo.com/ac/?ia=images&iax=images&q=",
+  alias: "di",
+  name: "duckduckgo-images",
+  search: "https://duckduckgo.com/?ia=images&iax=images&q=",
+  compl: "https://duckduckgo.com/ac/?ia=images&iax=images&q=",
   callback: completions.dd.callback,
 }
 
 // DuckDuckGo Videos
 completions.dv = {
-  alias:    "dv",
-  name:     "duckduckgo-videos",
-  search:   "https://duckduckgo.com/?ia=videos&iax=videos&q=",
-  compl:    "https://duckduckgo.com/ac/?ia=videos&iax=videos&q=",
+  alias: "dv",
+  name: "duckduckgo-videos",
+  search: "https://duckduckgo.com/?ia=videos&iax=videos&q=",
+  compl: "https://duckduckgo.com/ac/?ia=videos&iax=videos&q=",
   callback: completions.dd.callback,
 }
 
 // DuckDuckGo News
 completions.dn = {
-  alias:    "dn",
-  name:     "duckduckgo-news",
-  search:   "https://duckduckgo.com/?iar=news&ia=news&q=",
-  compl:    "https://duckduckgo.com/ac/?iar=news&ia=news&q=",
+  alias: "dn",
+  name: "duckduckgo-news",
+  search: "https://duckduckgo.com/?iar=news&ia=news&q=",
+  compl: "https://duckduckgo.com/ac/?iar=news&ia=news&q=",
   callback: completions.dd.callback,
 }
 
 // DuckDuckGo Maps
 completions.dm = {
-  alias:    "dm",
-  name:     "duckduckgo-maps",
-  search:   "https://duckduckgo.com/?ia=maps&iax=maps&iaxm=places&q=",
-  compl:    "https://duckduckgo.com/ac/?ia=maps&iax=maps&iaxm=places&q=",
+  alias: "dm",
+  name: "duckduckgo-maps",
+  search: "https://duckduckgo.com/?ia=maps&iax=maps&iaxm=places&q=",
+  compl: "https://duckduckgo.com/ac/?ia=maps&iax=maps&iaxm=places&q=",
   callback: completions.dd.callback,
 }
 
 // Google
 completions.go = {
-  alias:  "go",
-  name:   "google",
+  alias: "go",
+  name: "google",
   search: "https://www.google.com/search?q=",
-  compl:  "https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext&oit=1&cp=1&pgcl=7&q=",
+  compl: "https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext&oit=1&cp=1&pgcl=7&q=",
 }
 
 completions.go.callback = (response) => JSON.parse(response.text)[1]
 
 // Google Images
 completions.gi = {
-  alias:    "gi",
-  name:     "google-images",
-  search:   "https://www.google.com/search?tbm=isch&q=",
-  compl:    "https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext&oit=1&cp=1&pgcl=7&ds=i&q=",
+  alias: "gi",
+  name: "google-images",
+  search: "https://www.google.com/search?tbm=isch&q=",
+  compl: "https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext&oit=1&cp=1&pgcl=7&ds=i&q=",
   callback: completions.go.callback,
 }
 
 // Google Images (reverse image search by URL)
 completions.gI = {
-  alias:  "gI",
-  name:   "google-reverse-image",
+  alias: "gI",
+  name: "google-reverse-image",
   search: "https://www.google.com/searchbyimage?image_url=",
 }
 
 // Google - I'm Feeling Lucky
 completions.G = {
-  alias:    "G",
-  name:     "google-lucky",
-  search:   "https://www.google.com/search?btnI=1&q=",
-  compl:    "https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext&oit=1&cp=1&pgcl=7&q=",
+  alias: "G",
+  name: "google-lucky",
+  search: "https://www.google.com/search?btnI=1&q=",
+  compl: "https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext&oit=1&cp=1&pgcl=7&q=",
   callback: completions.go.callback,
 }
 
 // Google Scholar
 completions.gs = {
-  alias:  "gs",
-  name:   "google-scholar",
+  alias: "gs",
+  name: "google-scholar",
   search: "https://scholar.google.com/scholar?q=",
-  compl:  "https://scholar.google.com/scholar_complete?q=",
+  compl: "https://scholar.google.com/scholar_complete?q=",
 }
 
 completions.gs.callback = (response) => JSON.parse(response.text).l
 
 // Kagi
 completions.ka = {
-  alias:    "ka",
-  name:     "kagi",
-  search:   "https://kagi.com/search?q=",
-  compl:    "https://kagi.com/autosuggest?q=",
+  alias: "ka",
+  name: "kagi",
+  search: "https://kagi.com/search?q=",
+  compl: "https://kagi.com/autosuggest?q=",
   callback: (response) => JSON.parse(response.text).map((r) => {
     const u = new URL("https://kagi.com/search")
     u.searchParams.append("q", r.t)
@@ -851,10 +851,10 @@ completions.ka = {
 
 // Hex.pm
 completions.hx = {
-  alias:  "hx",
-  name:   "hex",
+  alias: "hx",
+  name: "hex",
   search: "https://hex.pm/packages?sort=downloads&search=",
-  compl:  "https://hex.pm/api/packages?sort=downloads&hx&search=",
+  compl: "https://hex.pm/api/packages?sort=downloads&hx&search=",
 }
 
 completions.hx.callback = (response) => JSON.parse(response.text).map((s) => {
@@ -886,10 +886,10 @@ completions.hx.callback = (response) => JSON.parse(response.text).map((s) => {
 // hexdocs
 // Same as hex but links to documentation pages
 completions.hd = {
-  alias:  "hd",
-  name:   "hexdocs",
+  alias: "hd",
+  name: "hexdocs",
   search: "https://hex.pm/packages?sort=downloads&search=",
-  compl:  "https://hex.pm/api/packages?sort=downloads&hd&search=",
+  compl: "https://hex.pm/api/packages?sort=downloads&hd&search=",
 }
 
 completions.hd.callback = (response) => JSON.parse(response.text).map((s) => {
@@ -915,8 +915,8 @@ completions.hd.callback = (response) => JSON.parse(response.text).map((s) => {
 // Exdocs
 // Similar to `hd` but searches inside docs using Google Custom Search
 completions.ex = googleCustomSearch({
-  alias:  "ex",
-  name:   "exdocs",
+  alias: "ex",
+  name: "exdocs",
   search: "https://hex.pm/packages?sort=downloads&ex&search=",
 })
 
@@ -979,8 +979,8 @@ completions.ex.callback = (response) => JSON.parse(response.text).items.map((s) 
 
 // Golang Docs
 completions.gg = googleCustomSearch({
-  alias:  "gg",
-  name:   "golang",
+  alias: "gg",
+  name: "golang",
   domain: "golang.org",
 })
 
@@ -1020,10 +1020,10 @@ completions.gg = googleCustomSearch({
 
 // Hoogle
 completions.ho = {
-  alias:  "ho",
-  name:   "hoogle",
+  alias: "ho",
+  name: "hoogle",
   search: "https://www.haskell.org/hoogle/?hoogle=",
-  compl:  "https://www.haskell.org/hoogle/?mode=json&hoogle=",
+  compl: "https://www.haskell.org/hoogle/?mode=json&hoogle=",
 }
 
 completions.ho.callback = (response) => JSON.parse(response.text).map((s) => {
@@ -1041,10 +1041,10 @@ completions.ho.callback = (response) => JSON.parse(response.text).map((s) => {
 
 // Haskell Wiki
 completions.hw = {
-  alias:  "hw",
-  name:   "haskellwiki",
+  alias: "hw",
+  name: "haskellwiki",
   search: "https://wiki.haskell.org/index.php?go=go&search=",
-  compl:  "https://wiki.haskell.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
+  compl: "https://wiki.haskell.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=",
 }
 
 completions.hw.callback = (response) => JSON.parse(response.text)[1]
@@ -1053,10 +1053,10 @@ completions.hw.callback = (response) => JSON.parse(response.text)[1]
 
 // caniuse
 completions.ci = {
-  alias:   "ci",
-  name:    "caniuse",
-  search:  "https://caniuse.com/?search=",
-  compl:   "https://caniuse.com/process/query.php?search=",
+  alias: "ci",
+  name: "caniuse",
+  search: "https://caniuse.com/?search=",
+  compl: "https://caniuse.com/process/query.php?search=",
   favicon: "https://caniuse.com/img/favicon-128.png",
 }
 
@@ -1064,7 +1064,7 @@ completions.ci.getData = async () => {
   const storageKey = "completions.ci.data"
   const storedData = await localStorage.get(storageKey)
   if (storedData) {
-  //   console.log("data found in localStorage", { storedData })
+    //   console.log("data found in localStorage", { storedData })
     return JSON.parse(storedData)
   }
   // console.log("data not found in localStorage", { storedData })
@@ -1112,24 +1112,24 @@ completions.ci.callback = async (response) => {
 
 // jQuery API documentation
 completions.jq = googleCustomSearch({
-  alias:  "jq",
-  name:   "jquery",
+  alias: "jq",
+  name: "jquery",
   domain: "jquery.com",
 })
 
 // NodeJS standard library documentation
 completions.no = googleCustomSearch({
-  alias:  "no",
-  name:   "node",
+  alias: "no",
+  name: "node",
   domain: "nodejs.org",
 })
 
 // Mozilla Developer Network (MDN)
 completions.md = {
-  alias:  "md",
-  name:   "mdn",
+  alias: "md",
+  name: "mdn",
   search: "https://developer.mozilla.org/search?q=",
-  compl:  "https://developer.mozilla.org/api/v1/search?q=",
+  compl: "https://developer.mozilla.org/api/v1/search?q=",
 }
 
 completions.md.callback = (response) => {
@@ -1147,10 +1147,10 @@ completions.md.callback = (response) => {
 
 // NPM registry search
 completions.np = {
-  alias:   "np",
-  name:    "npm",
-  search:  "https://www.npmjs.com/search?q=",
-  compl:   "https://api.npms.io/v2/search/suggestions?size=20&q=",
+  alias: "np",
+  name: "npm",
+  search: "https://www.npmjs.com/search?q=",
+  compl: "https://api.npms.io/v2/search/suggestions?size=20&q=",
   favicon: getDuckduckgoFaviconUrl("https://www.npmjs.com"),
 }
 
@@ -1194,11 +1194,11 @@ completions.np.callback = (response) => JSON.parse(response.text)
 
 // Hacker News (YCombinator)
 completions.hn = {
-  alias:  "hn",
-  name:   "hackernews",
+  alias: "hn",
+  name: "hackernews",
   domain: "news.ycombinator.com",
   search: "https://hn.algolia.com/?query=",
-  compl:  "https://hn.algolia.com/api/v1/search?tags=(story,comment)&query=",
+  compl: "https://hn.algolia.com/api/v1/search?tags=(story,comment)&query=",
 }
 
 completions.hn.callback = (response) => {
@@ -1213,14 +1213,14 @@ completions.hn.callback = (response) => {
       prefix += `[↲${escapeHTML(s.num_comments)}] `
     }
     switch (s._tags[0]) {
-    case "story":
-      title = s.title
-      break
-    case "comment":
-      title = s.comment_text
-      break
-    default:
-      title = s.objectID
+      case "story":
+        title = s.title
+        break
+      case "comment":
+        title = s.comment_text
+        break
+      default:
+        title = s.objectID
     }
     const url = `https://news.ycombinator.com/item?id=${encodeURIComponent(s.objectID)}`
     return createSuggestionItem(`
@@ -1234,16 +1234,17 @@ completions.hn.callback = (response) => {
 
 // Twitter
 completions.tw = {
-  alias:  "tw",
-  name:   "twitter",
+  alias: "tw",
+  name: "twitter",
   search: "https://twitter.com/search?q=",
-  compl:  "https://duckduckgo.com/ac/?q=twitter%20",
+  compl: "https://duckduckgo.com/ac/?q=twitter%20",
 }
 
-completions.tw.callback = (response, {query}) => {
+completions.tw.callback = (response, { query }) => {
   const results = JSON.parse(response.text).map((r) => {
     const q = r.phrase.replace(/^twitter /, "")
-    return createURLItem(q, `https://twitter.com/search?q=${encodeURIComponent(q)}`)})
+    return createURLItem(q, `https://twitter.com/search?q=${encodeURIComponent(q)}`)
+  })
   if (query.length >= 2 && query.match(/^@/)) {
     results.unshift(createURLItem(query, `https://twitter.com/${encodeURIComponent(query.replace(/^@/, ""))}`))
   }
@@ -1252,10 +1253,10 @@ completions.tw.callback = (response, {query}) => {
 
 // Reddit
 completions.re = {
-  alias:  "re",
-  name:   "reddit",
+  alias: "re",
+  name: "reddit",
   search: "https://www.reddit.com/search?sort=relevance&t=all&q=",
-  compl:  "https://api.reddit.com/search?syntax=plain&sort=relevance&limit=20&q=",
+  compl: "https://api.reddit.com/search?syntax=plain&sort=relevance&limit=20&q=",
 }
 
 completions.re.thumbs = {
@@ -1266,7 +1267,7 @@ completions.re.thumbs = {
   spoiler: "https://i.imgur.com/gx2tGsv.png",
 }
 
-completions.re.callback = async (response, {query}) => {
+completions.re.callback = async (response, { query }) => {
   const [_, sub, __, q = ""] = query.match(/^\s*\/?(r\/[a-zA-Z0-9]+)(\s+(.*))?/) ?? [null, null, null, query]
   if (sub && q) {
     response = {
@@ -1277,9 +1278,9 @@ completions.re.callback = async (response, {query}) => {
     return JSON.parse(res).names.map((name) => createURLItem(`r/${name}`, `https://reddit.com/r/${encodeURIComponent(name)}`, { query: `r/${name}` }))
   }
   return JSON.parse(response.text).data.children.map(({ data }) => {
-      const thumb = data.thumbnail?.match(/^https?:\/\//) ? data.thumbnail : completions.re.thumbs[data.thumbnail] ?? completions.re.thumbs["default"]
-      const relDate = prettyDate(new Date(parseInt(data.created, 10) * 1000))
-      return createSuggestionItem(`
+    const thumb = data.thumbnail?.match(/^https?:\/\//) ? data.thumbnail : completions.re.thumbs[data.thumbnail] ?? completions.re.thumbs["default"]
+    const relDate = prettyDate(new Date(parseInt(data.created, 10) * 1000))
+    return createSuggestionItem(`
         <div style="display: flex; flex-direction: row">
           <img style="width: 70px; height: 50px; margin-right: 0.8em" alt="thumbnail" src="${encodeURI(thumb)}">
           <div>
@@ -1291,23 +1292,24 @@ completions.re.callback = async (response, {query}) => {
             </div>
           </div>
         </div>
-      `, { url: `https://reddit.com${encodeURIComponent(data.permalink)}` }) })
+      `, { url: `https://reddit.com${encodeURIComponent(data.permalink)}` })
+  })
 }
 
 // YouTube
 completions.yt = {
-  alias:  "yt",
-  name:   "youtube",
+  alias: "yt",
+  name: "youtube",
   search: "https://www.youtube.com/search?q=",
-  compl:  `https://www.googleapis.com/youtube/v3/search?maxResults=20&part=snippet&type=video,channel&key=${priv.keys.google_yt}&safeSearch=none&q=`,
-  priv:   true,
+  compl: `https://www.googleapis.com/youtube/v3/search?maxResults=20&part=snippet&type=video,channel&key=${priv.keys.google_yt}&safeSearch=none&q=`,
+  priv: true,
 }
 
 completions.yt.callback = (response) => JSON.parse(response.text).items
   .map((s) => {
     const thumb = s.snippet.thumbnails.default
     switch (s.id.kind) {
-    case "youtube#channel":
+      case "youtube#channel":
         return createSuggestionItem(`
           <div style="display: flex; flex-direction: row">
             <img style="width: ${parseInt(thumb.width ?? 120, 10)}px; height: ${parseInt(thumb.height ?? 90, 10)}px; margin-right: 0.8em" alt="thumbnail" src="${encodeURI(thumb.url)}">
@@ -1324,7 +1326,7 @@ completions.yt.callback = (response) => JSON.parse(response.text).items
             </div>
           </div>
         `, { url: `https://youtube.com/channel/${s.id.channelId}` })
-    case "youtube#video":
+      case "youtube#video":
         const relDate = prettyDate(new Date(s.snippet.publishTime))
         return createSuggestionItem(`
           <div style="display: flex; flex-direction: row">
@@ -1342,8 +1344,8 @@ completions.yt.callback = (response) => JSON.parse(response.text).items
             </div>
           </div>
         `, { url: `https://youtu.be/${encodeURIComponent(s.id.videoId)}` })
-    default:
-      return null
+      default:
+        return null
     }
   }).filter((s) => s !== null)
 

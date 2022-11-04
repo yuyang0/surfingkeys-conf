@@ -2,6 +2,7 @@ import ghReservedNames from "github-reserved-names"
 
 import util from "./util.js"
 import api from "./api.js"
+import reservedNames from "github-reserved-names"
 
 const {
   tabOpenLink,
@@ -53,6 +54,31 @@ actions.scrollToHash = (hash = null) => {
   e.scrollIntoView({ behavior: "smooth" })
 }
 
+actions.siteSearch = (qname, site) => {
+  let u
+  try {
+    u = new URL(window.location.href)
+  } catch (e) {
+    return
+  }
+
+  const siteParam = `site:${site}`
+
+  const q = u.searchParams.get(qname)
+  if (!q) {
+    return
+  }
+
+  const i = q.indexOf(siteParam)
+  if (i !== -1) {
+    u.searchParams.set(qname, q.replace(siteParam, ""))
+  } else {
+    u.searchParams.set(qname, `${q} ${siteParam}`)
+  }
+
+  actions.openLink(u.href)
+}
+
 // URL Manipulation/querying
 // -------------------------
 actions.vimEditURL = () =>
@@ -75,8 +101,7 @@ actions.getWhoisUrl = ({ hostname = window.location.hostname } = {}) =>
   `${ddossierUrl}?dom_whois=true&addr=${hostname}`
 
 actions.getDnsInfoUrl = ({ hostname = window.location.hostname, all = false } = {}) =>
-  `${ddossierUrl}?dom_dns=true&addr=${hostname}${
-    all ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true" : ""
+  `${ddossierUrl}?dom_dns=true&addr=${hostname}${all ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true" : ""
   }`
 
 actions.getGoogleCacheUrl = ({ href = window.location.href } = {}) =>
@@ -211,14 +236,39 @@ actions.viewGodoc = () => actions.openLink(`https://godoc.org/${util.getURLPath(
 
 // Google
 actions.go = {}
+actions.go.siteSearch = (site) => {
+  actions.siteSearch("q", site)
+}
+
+actions.go.open = (pageType, q) => {
+  const goog = new URL("https://google.com/search")
+  goog.searchParams.set("q", q)
+
+  switch (pageType) {
+    case "images":
+      goog.searchParams.set("tbm", "isch")
+      break;
+    case "videos":
+      goog.searchParams.set("tbm", "vid")
+      break;
+    case "news":
+      goog.searchParams.set("tbm", "nws")
+      break;
+    case "maps":
+      goog.pathname = "/maps"
+      break;
+  }
+  actions.openLink(goog.href)
+}
+
 actions.go.parseLocation = () => {
   const u = new URL(window.location.href)
   const q = u.searchParams.get("q")
   const p = u.pathname.split("/")
 
   const res = {
-    type:  "unknown",
-    url:   u,
+    type: "unknown",
+    url: u,
     query: q,
   }
 
@@ -227,17 +277,17 @@ actions.go.parseLocation = () => {
       res.type = "home"
     } else if (p[1] === "search") {
       switch (u.searchParams.get("tbm")) {
-      case "vid":
-        res.type = "videos"
-        break
-      case "isch":
-        res.type = "images"
-        break
-      case "nws":
-        res.type = "news"
-        break
-      default:
-        res.type = "web"
+        case "vid":
+          res.type = "videos"
+          break
+        case "isch":
+          res.type = "images"
+          break
+        case "nws":
+          res.type = "news"
+          break
+        default:
+          res.type = "web"
       }
     } else if (p[1] === "maps") {
       res.type = "maps"
@@ -254,96 +304,217 @@ actions.go.parseLocation = () => {
 
 actions.go.ddg = () => {
   const g = actions.go.parseLocation()
+  actions.dg.open(g.type, g.query);
+}
 
-  const ddg = new URL("https://duckduckgo.com")
-  if (g.query) {
-    ddg.searchParams.set("q", g.query)
+actions.go.bing = () => {
+  const g = actions.go.parseLocation()
+  actions.bing.open(g.type, g.query);
+}
+
+actions.go.baidu = () => {
+  const g = actions.go.parseLocation()
+  actions.baidu.open(g.type, g.query)
+}
+
+// Bing 
+actions.bing = {}
+actions.bing.open = (pageType, query) => {
+  const bing = new URL("https://www.bing.com/search")
+  if (query) {
+    bing.searchParams.set("q", query)
   }
 
-  switch (g.type) {
-  case "videos":
-    ddg.searchParams.set("ia", "videos")
-    ddg.searchParams.set("iax", "videos")
-    break
-  case "images":
-    ddg.searchParams.set("ia", "images")
-    ddg.searchParams.set("iax", "images")
-    break
-  case "news":
-    ddg.searchParams.set("ia", "news")
-    ddg.searchParams.set("iar", "news")
-    break
-  case "maps":
-    ddg.searchParams.set("iaxm", "maps")
-    break
-  case "search":
-  case "home":
-  case "unknown":
-  default:
-    ddg.searchParams.set("ia", "web")
-    break
+  switch (pageType) {
+    case "videos":
+      bing.pathname = "/videos/search";
+      break
+    case "images":
+      bing.pathname = "/images/search";
+      break
+    case "news":
+      bing.pathname = "/news/search";
+      break
+    case "maps":
+      bing.pathname = "/maps";
+      break
+    case "search":
+    case "home":
+    case "unknown":
+    default:
+      break
+  }
+
+  actions.openLink(bing.href)
+}
+
+actions.bing.parseLocation = () => {
+  const u = new URL(window.location.href)
+  const q = u.searchParams.get("q")
+  const p = u.pathname.split("/")
+
+  const res = {
+    type: "unknown",
+    url: u,
+    query: q,
+  }
+  if (p.length <= 1) {
+    res.type = "home"
+  } else {
+    res.type = p[1].toLocaleLowerCase()
+  }
+  return res
+}
+
+actions.bing.goog = () => {
+  const u = actions.bing.parseLocation();
+  actions.go.open(u.type, u.query);
+}
+
+actions.bing.ddg = () => {
+  const u = actions.bing.parseLocation();
+  actions.dg.open(u.type, u.query);
+}
+
+// Baidu
+actions.baidu = {}
+actions.baidu.parseLocation = () => {
+  const u = new URL(window.location.href)
+  let q = u.searchParams.get("wd")
+  if (!q) {
+    q = u.searchParams.get("word")
+  }
+  const p = u.pathname.split("/")
+
+  const res = {
+    type: "unknown",
+    url: u,
+    query: q,
+  }
+
+  const tn = u.searchParams.get("tn")
+  const pd = u.searchParams.get("pd")
+
+  if (tn === "baiduimage") {
+    res.type = "images"
+  } else if (pd === "video") {
+    res.type = "videos"
+  } else if (tn === "news") {
+    res.type = "news"
+  } else if (u.host === "map.baidu.com") {
+    res.type = "maps"
+  }
+
+  return res
+}
+
+actions.baidu.open = (pageType, query) => {
+  let u = new URL("https://www.baidu.com/s")
+  switch (pageType) {
+    case "images":
+      u = new URL("https://image.baidu.com/search/index")
+      u.searchParams.set("tn", "baiduimage")
+      break;
+    case "videos":
+      u = new URL("https://www.baidu.com/sf/vsearch")
+      u.searchParams.set("pd", "video")
+      break;
+    case "news":
+      u.searchParams.set("tn", "news")
+      break;
+    case "maps":
+      u = new URL("https://map.baidu.com")
+      break;
+  }
+  u.searchParams.set("wd", query);
+  actions.openLink(u.href)
+}
+
+actions.baidu.goog = () => {
+  const res = actions.baidu.parseLocation()
+  actions.go.open(res.type, res.query);
+}
+
+actions.baidu.ddg = () => {
+  const res = actions.baidu.parseLocation()
+  actions.dg.open(res.type, res.query);
+}
+
+// DuckDuckGo
+actions.dg = {}
+actions.dg.open = (pageType, query) => {
+  const ddg = new URL("https://duckduckgo.com")
+  if (query) {
+    ddg.searchParams.set("q", query)
+  }
+
+  switch (pageType) {
+    case "videos":
+      ddg.searchParams.set("ia", "videos")
+      ddg.searchParams.set("iax", "videos")
+      break
+    case "images":
+      ddg.searchParams.set("ia", "images")
+      ddg.searchParams.set("iax", "images")
+      break
+    case "news":
+      ddg.searchParams.set("ia", "news")
+      ddg.searchParams.set("iar", "news")
+      break
+    case "maps":
+      ddg.searchParams.set("iaxm", "maps")
+      break
+    case "search":
+    case "home":
+    case "unknown":
+    default:
+      ddg.searchParams.set("ia", "web")
+      break
   }
 
   actions.openLink(ddg.href)
 }
 
-// DuckDuckGo
-actions.dg = {}
-actions.dg.goog = () => {
-  let u
-  try {
-    u = new URL(window.location.href)
-  } catch (e) {
-    return
-  }
+actions.dg.parseLocation = () => {
+  const u = new URL(window.location.href)
   const q = u.searchParams.get("q")
-  if (!q) {
-    return
-  }
+  const p = u.pathname.split("/")
 
-  const goog = new URL("https://google.com/search")
-  goog.searchParams.set("q", q)
+  const res = {
+    type: "unknown",
+    url: u,
+    query: q,
+  }
 
   const iax = u.searchParams.get("iax")
   const iaxm = u.searchParams.get("iaxm")
   const iar = u.searchParams.get("iar")
 
   if (iax === "images") {
-    goog.searchParams.set("tbm", "isch")
+    res.type = "images"
   } else if (iax === "videos") {
-    goog.searchParams.set("tbm", "vid")
+    res.type = "videos"
   } else if (iar === "news") {
-    goog.searchParams.set("tbm", "nws")
+    res.type = "news"
   } else if (iaxm === "maps") {
-    goog.pathname = "/maps"
+    res.type = "maps"
   }
 
-  actions.openLink(goog.href)
+  return res
+}
+
+actions.dg.goog = () => {
+  const res = actions.dg.parseLocation();
+  actions.go.open(res.type, res.query);
+}
+
+actions.dg.bing = () => {
+  const res = actions.dg.parseLocation();
+  actions.bing.open(res.type, res.query)
 }
 
 actions.dg.siteSearch = (site) => {
-  let u
-  try {
-    u = new URL(window.location.href)
-  } catch (e) {
-    return
-  }
-
-  const siteParam = `site:${site}`
-
-  const q = u.searchParams.get("q")
-  if (!q) {
-    return
-  }
-
-  const i = q.indexOf(siteParam)
-  if (i !== -1) {
-    u.searchParams.set("q", q.replace(siteParam, ""))
-  } else {
-    u.searchParams.set("q", `${q} ${siteParam}`)
-  }
-
-  actions.openLink(u.href)
+  actions.siteSearch("q", site)
 }
 
 // GitHub
@@ -359,15 +530,15 @@ actions.gh.star = ({ toggle = false } = {}) => async () => {
 
   let container
   switch (starContainers.length) {
-  case 0:
-    return
-  case 1:
-    [container] = starContainers
-    break
-  default:
-    try {
-      container = await util.createHints(starContainers, { action: null })
-    } catch (_) { return }
+    case 0:
+      return
+    case 1:
+      [container] = starContainers
+      break
+    default:
+      try {
+        container = await util.createHints(starContainers, { action: null })
+      } catch (_) { return }
   }
 
   const repoUrl = container.parentElement.parentElement?.matches("ul.pagehead-actions")
@@ -415,13 +586,13 @@ actions.gh.parseRepo = (url = window.location.href, rootOnly = false) => {
   )
   return cond
     ? {
-      type:     "repo",
+      type: "repo",
       user,
       repo,
-      owner:    user,
-      name:     repo,
-      href:     url,
-      url:      u,
+      owner: user,
+      name: repo,
+      href: url,
+      url: u,
       repoBase: `${user}/${repo}`,
       repoRoot: isRoot,
       repoPath: rest,
@@ -443,11 +614,11 @@ actions.gh.parseUser = (url = window.location.href, rootOnly = false) => {
   )
   return cond
     ? {
-      type:     "user",
-      name:     user,
+      type: "user",
+      name: user,
       user,
-      href:     url,
-      url:      u,
+      href: url,
+      url: u,
       userRoot: isRoot,
       userPath: rest,
     }
@@ -472,16 +643,16 @@ actions.gh.parseFile = (url = window.location.href) => {
   )
   if (!cond) return null
   const f = {
-    type:        "file",
+    type: "file",
     user,
     repo,
     pathType,
     commitHash,
     isDirectory: pathType === "tree",
-    href:        url,
-    url:         u,
-    filePath:    rest,
-    repoBase:    `/${user}/${repo}`,
+    href: url,
+    url: u,
+    filePath: rest,
+    repoBase: `/${user}/${repo}`,
   }
   f.rawUrl = f.isDirectory
     ? null
@@ -512,7 +683,7 @@ actions.gh.parseCommit = (url = window.location.href) => {
       repo,
       commitHash,
       href: url,
-      url:  u,
+      url: u,
     }
     : null
 }
@@ -534,13 +705,13 @@ actions.gh.parseIssue = (url = window.location.href) => {
   return cond
     ? {
       href: url,
-      url:  u,
+      url: u,
       ...(isRoot ? {
-        type:      "issues",
+        type: "issues",
         issuePath: rest,
       } : {
-        type:      "issue",
-        number:    rest[0],
+        type: "issue",
+        number: rest[0],
         issuePath: rest,
       }),
     }
@@ -564,13 +735,13 @@ actions.gh.parsePull = (url = window.location.href) => {
   return cond
     ? {
       href: url,
-      url:  u,
+      url: u,
       ...(isRoot ? {
-        type:     "pulls",
+        type: "pulls",
         pullPath: rest,
       } : {
-        type:     "pull",
-        number:   rest[0],
+        type: "pull",
+        number: rest[0],
         pullPath: rest,
       }),
     }
@@ -632,26 +803,26 @@ actions.gh.goParent = () => {
   const newPath = (() => {
     const [user, repo, pathType] = segments
     switch (segments.length) {
-    case 0:
-      return false
-    case 4:
-      switch (pathType) {
-      case "blob":
-      case "tree":
-        return [user, repo]
-      case "pull":
-        return [user, repo, "pulls"]
+      case 0:
+        return false
+      case 4:
+        switch (pathType) {
+          case "blob":
+          case "tree":
+            return [user, repo]
+          case "pull":
+            return [user, repo, "pulls"]
+          default:
+            break
+        }
+        break
+      case 5:
+        if (pathType === "blob") {
+          return [user, repo]
+        }
+        break
       default:
         break
-      }
-      break
-    case 5:
-      if (pathType === "blob") {
-        return [user, repo]
-      }
-      break
-    default:
-      break
     }
     return segments.slice(0, segments.length - 1)
   })()
@@ -719,8 +890,8 @@ actions.gh.openFileFromClipboard = async ({ newTab = true } = {}) => {
 
   const loc = window.location.href
   const dest = {
-    user:       null,
-    repo:       null,
+    user: null,
+    repo: null,
     commitHash: "master",
   }
 
@@ -874,15 +1045,14 @@ actions.wp.viewWikiRank = () => {
 }
 
 actions.wp.markdownSummary = () =>
-  `> ${
-    [
-      (acc) => [...acc.querySelectorAll("sup")].map((e) => e.remove()),
-      (acc) => [...acc.querySelectorAll("b")].forEach((e) => { e.innerText = `**${e.innerText}**` }),
-      (acc) => [...acc.querySelectorAll("i")].forEach((e) => { e.innerText = `_${e.innerText}_` }),
-    ].reduce(
-      (acc, f) => (f(acc) && false) || acc,
-      document.querySelector("#mw-content-text p:not([class]):not([id])").cloneNode(true),
-    ).innerText.trim()}
+  `> ${[
+    (acc) => [...acc.querySelectorAll("sup")].map((e) => e.remove()),
+    (acc) => [...acc.querySelectorAll("b")].forEach((e) => { e.innerText = `**${e.innerText}**` }),
+    (acc) => [...acc.querySelectorAll("i")].forEach((e) => { e.innerText = `_${e.innerText}_` }),
+  ].reduce(
+    (acc, f) => (f(acc) && false) || acc,
+    document.querySelector("#mw-content-text p:not([class]):not([id])").cloneNode(true),
+  ).innerText.trim()}
 
 — ${actions.getMarkdownLink()}`
 
@@ -1051,7 +1221,7 @@ actions.yt.getCurrentTimestampLink = () =>
 actions.yt.getCurrentTimestampMarkdownLink = () =>
   actions.getMarkdownLink({
     title: `${document.querySelector("#ytd-player .ytp-title").innerText} @ ${actions.yt.getCurrentTimestampHuman()} - YouTube`,
-    href:  actions.yt.getCurrentTimestampLink(),
+    href: actions.yt.getCurrentTimestampLink(),
   })
 
 export default actions

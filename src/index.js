@@ -58,7 +58,7 @@ const registerSearchEngines = (searchEngines, searchleader) =>
   Object.values(searchEngines).forEach((s) => {
     const options = {
       favicon_url: s.favicon,
-      skipMaps:    true,
+      skipMaps: true,
     }
     addSearchAlias(
       s.alias,
