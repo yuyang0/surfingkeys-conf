@@ -1,6 +1,7 @@
 import conf from "./conf.js"
 import help from "./help.js"
 import api from "./api.js"
+import util from "./util.js"
 
 const { categories } = help
 const {
@@ -78,6 +79,79 @@ const registerSearchEngines = (searchEngines, searchleader) =>
     })
   })
 
+const invokeSalaDict = () => {
+  let sel = document.getSelection();
+  if (!(sel.focusNode && sel.focusNode.textContent)) {
+    return
+  }
+
+  let wordRng = util.getNearestWord(sel.focusNode.textContent, sel.focusOffset);
+  let sOffset = wordRng[0]
+  let eOffset = wordRng[0] + wordRng[1]
+  if (eOffset <= sOffset) {
+    return
+  }
+  let rng = document.createRange();
+  rng.setStart(sel.anchorNode, sOffset);
+  rng.setEnd(sel.focusNode, eOffset);
+  sel.removeAllRanges();
+  sel.addRange(rng);
+
+
+  let cursor = document.querySelector("div.surfingkeys_cursor");
+  let left = parseFloat(cursor.style.left);
+  let top = parseFloat(cursor.style.top);
+  let height = parseFloat(cursor.style.height);
+  let fixedNodes = document.elementsFromPoint(left, top);
+  let node = cursor;
+  if (fixedNodes.length >= 2) {
+    node = fixedNodes[1];
+  }
+
+  let downEvt = new MouseEvent('mousedown', {
+    clientX: left,
+    clientY: top + height / 2,
+  });
+  let upEvt = new MouseEvent('mouseup', {
+    clientX: left,
+    clientY: top + height / 2,
+  });
+  let clickEvt = new MouseEvent('click', {
+    clientX: left,
+    clientY: top + height / 2,
+  });
+  let dblClickEvt = new MouseEvent('dblclick', {
+    clientX: left,
+    clientY: top + height / 2,
+  });
+  // simulate double click
+  node.dispatchEvent(downEvt);
+  node.dispatchEvent(upEvt);
+  node.dispatchEvent(clickEvt);
+  node.dispatchEvent(downEvt);
+  node.dispatchEvent(upEvt);
+  node.dispatchEvent(clickEvt);
+  node.dispatchEvent(dblClickEvt);
+
+  // set a timeout callback to close SalaDict panel.
+  setTimeout(() => {
+    let saladict = document.querySelector("div.saladict-panel")
+    function _removeSalaDict(e) {
+      // console.log("++++++++", e);
+      if (e.key === "Escape") {
+        document.querySelector("#saladict-dictpanel-root > div").shadowRoot.querySelector("div.dictPanel-Head button[title='关闭查词面板']").click()
+        document.body.removeEventListener("keyup", _removeSalaDict);
+      }
+    }
+    if (saladict !== null) {
+      document.body.addEventListener(
+        "keyup",
+        _removeSalaDict
+      );
+    }
+  }, 1000)
+}
+
 const main = async () => {
   window.surfingKeys = api
   if (conf.settings) {
@@ -122,6 +196,8 @@ const main = async () => {
       vmapkey('s' + entry.key, fullDescription, () => { searchSelectedWith(se, false, false, entry.alias) });
     })
   }
+  vmapkey('q', `#${categories.visualMode} translate with saladict`, invokeSalaDict);
+
 }
 
 if (typeof window !== "undefined") {

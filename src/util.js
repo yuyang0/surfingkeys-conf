@@ -175,4 +175,36 @@ util.prettyDate = (date) => {
   return `${count ?? ""}${count ? " " : ""}${unit}${(count ?? 0) > 1 ? "s" : ""}${count ?" ago" : ""}`
 }
 
+// copy from surfingkeys/src/content_scripts/common/utils.js
+util.getNearestWord = (text, offset) => {
+  var ret = [0, text.length];
+  var nonWord = /\W/;
+  if (offset < 0) {
+    offset = 0;
+  } else if (offset >= text.length) {
+    offset = text.length - 1;
+  }
+  var found = true;
+  if (nonWord.test(text[offset])) {
+    var delta = 0;
+    found = false;
+    while (!found && (offset > delta || (offset + delta) < text.length)) {
+      delta++;
+      found = ((offset - delta) >= 0 && !nonWord.test(text[offset - delta])) || ((offset + delta) < text.length && !nonWord.test(text[offset + delta]));
+    }
+    offset = ((offset - delta) >= 0 && !nonWord.test(text[offset - delta])) ? (offset - delta) : (offset + delta);
+  }
+  if (found) {
+    var start = offset,
+      end = offset;
+    while (start >= 0 && !nonWord.test(text[start])) {
+      start--;
+    }
+    while (end < text.length && !nonWord.test(text[end])) {
+      end++;
+    }
+    ret = [start + 1, end - start - 1];
+  }
+  return ret;
+}
 export default util
