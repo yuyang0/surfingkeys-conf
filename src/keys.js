@@ -384,15 +384,25 @@ maps["www.google.com"] = [
     description: "Search site:zhihu.com",
     callback: () => actions.go.siteSearch("zhihu.com"),
   },
-]
-
-maps["algolia.com"] = [
   {
-    alias: "a",
-    description: "Open search result",
-    callback: () => util.createHints(".item-main h2>a:first-child"),
+    alias: "spy",
+    description: "Search Python",
+    callback: () => actions.go.toggleParam("Python"),
+  },
+  {
+    alias: "srs",
+    description: "Search Rust",
+    callback: () => actions.go.toggleParam("Rust"),
   },
 ]
+
+// maps["algolia.com"] = [
+//   {
+//     alias: "a",
+//     description: "Open search result",
+//     callback: () => util.createHints(".item-main h2>a:first-child"),
+//   },
+// ]
 
 const ddgSelector = [
   "a[rel=noopener][target=_self]:not([data-testid=result-extras-url-link])",
@@ -869,62 +879,62 @@ maps["news.ycombinator.com"] = [
   },
 ]
 
-maps["producthunt.com"] = [
-  {
-    alias: "a",
-    description: "View product (external)",
-    callback: actions.ph.openExternal,
-  },
-  {
-    alias: "v",
-    description: "View product",
-    callback: () => util.createHints("ul[class^='postsList_'] > li > div[class^='item_'] > a"),
-  },
-  {
-    alias: "s",
-    description: "Upvote product",
-    callback: () => util.createHints("button[data-test='vote-button']"),
-  },
-]
+// maps["producthunt.com"] = [
+//   {
+//     alias: "a",
+//     description: "View product (external)",
+//     callback: actions.ph.openExternal,
+//   },
+//   {
+//     alias: "v",
+//     description: "View product",
+//     callback: () => util.createHints("ul[class^='postsList_'] > li > div[class^='item_'] > a"),
+//   },
+//   {
+//     alias: "s",
+//     description: "Upvote product",
+//     callback: () => util.createHints("button[data-test='vote-button']"),
+//   },
+// ]
 
-maps["behance.net"] = [
-  {
-    alias: "s",
-    description: "Appreciate project",
-    callback: () => util.createHints(".appreciation-button"),
-  },
-  {
-    alias: "b",
-    description: "Add project to collection",
-    callback: () => document.querySelector(".qa-action-collection").click(),
-  },
-  {
-    alias: "a",
-    description: "View project",
-    callback: () => util.createHints(".rf-project-cover__title"),
-  },
-  {
-    alias: "A",
-    description: "View project (non-active new tab)",
-    callback: () => util.createHints(
-      ".rf-project-cover__title",
-      actions.openAnchor({ newTab: true, active: false }),
-    ),
-  },
-]
+// maps["behance.net"] = [
+//   {
+//     alias: "s",
+//     description: "Appreciate project",
+//     callback: () => util.createHints(".appreciation-button"),
+//   },
+//   {
+//     alias: "b",
+//     description: "Add project to collection",
+//     callback: () => document.querySelector(".qa-action-collection").click(),
+//   },
+//   {
+//     alias: "a",
+//     description: "View project",
+//     callback: () => util.createHints(".rf-project-cover__title"),
+//   },
+//   {
+//     alias: "A",
+//     description: "View project (non-active new tab)",
+//     callback: () => util.createHints(
+//       ".rf-project-cover__title",
+//       actions.openAnchor({ newTab: true, active: false }),
+//     ),
+//   },
+// ]
 
-maps["fonts.adobe.com"] = [
-  {
-    alias: "a",
-    description: "Activate font",
-    callback: () => util.createHints(".spectrum-ToggleSwitch-input"),
-  },
-  {
-    alias: "s",
-    description: "Favorite font",
-    callback: () => util.createHints(".favorite-toggle-icon"),
-  },
-]
+// maps["fonts.adobe.com"] = [
+//   {
+//     alias: "a",
+//     description: "Activate font",
+//     callback: () => util.createHints(".spectrum-ToggleSwitch-input"),
+//   },
+//   {
+//     alias: "s",
+//     description: "Favorite font",
+//     callback: () => util.createHints(".favorite-toggle-icon"),
+//   },
+// ]
 
 maps["wikipedia.org"] = [
   {
@@ -954,13 +964,13 @@ maps["wikipedia.org"] = [
   },
 ]
 
-maps["craigslist.org"] = [
-  {
-    alias: "a",
-    description: "View listing",
-    callback: () => util.createHints("a.result-title"),
-  },
-]
+// maps["craigslist.org"] = [
+//   {
+//     alias: "a",
+//     description: "View listing",
+//     callback: () => util.createHints("a.result-title"),
+//   },
+// ]
 
 maps["stackoverflow.com"] = [
   {
@@ -978,194 +988,194 @@ maps["aur.archlinux.org"] = [
   },
 ]
 
-maps["home.nest.com"] = [
-  {
-    path: "/thermostat/DEVICE_.*",
-    leader: "",
-    alias: "=",
-    description: "Increment temperature",
-    callback: () => actions.nt.adjustTemp(1),
-  },
-  {
-    path: "/thermostat/DEVICE_.*",
-    leader: "",
-    alias: "-",
-    description: "Decrement temperature",
-    callback: () => actions.nt.adjustTemp(-1),
-  },
-  {
-    path: "/thermostat/DEVICE_.*",
-    alias: "h",
-    description: "Switch mode to Heat",
-    callback: () => actions.nt.setMode("heat"),
-  },
-  {
-    path: "/thermostat/DEVICE_.*",
-    alias: "c",
-    description: "Switch mode to Cool",
-    callback: () => actions.nt.setMode("cool"),
-  },
-  {
-    path: "/thermostat/DEVICE_.*",
-    alias: "r",
-    description: "Switch mode to Heat/Cool",
-    callback: () => actions.nt.setMode("range"),
-  },
-  {
-    path: "/thermostat/DEVICE_.*",
-    alias: "o",
-    description: "Switch mode to Off",
-    callback: () => actions.nt.setMode("off"),
-  },
-  {
-    path: "/thermostat/DEVICE_.*",
-    alias: "f",
-    description: "Switch fan On",
-    callback: () => actions.nt.setFan(1),
-  },
-  {
-    path: "/thermostat/DEVICE_.*",
-    alias: "F",
-    description: "Switch fan Off",
-    callback: () => actions.nt.setFan(0),
-  },
-]
+// maps["home.nest.com"] = [
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     leader: "",
+//     alias: "=",
+//     description: "Increment temperature",
+//     callback: () => actions.nt.adjustTemp(1),
+//   },
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     leader: "",
+//     alias: "-",
+//     description: "Decrement temperature",
+//     callback: () => actions.nt.adjustTemp(-1),
+//   },
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     alias: "h",
+//     description: "Switch mode to Heat",
+//     callback: () => actions.nt.setMode("heat"),
+//   },
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     alias: "c",
+//     description: "Switch mode to Cool",
+//     callback: () => actions.nt.setMode("cool"),
+//   },
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     alias: "r",
+//     description: "Switch mode to Heat/Cool",
+//     callback: () => actions.nt.setMode("range"),
+//   },
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     alias: "o",
+//     description: "Switch mode to Off",
+//     callback: () => actions.nt.setMode("off"),
+//   },
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     alias: "f",
+//     description: "Switch fan On",
+//     callback: () => actions.nt.setFan(1),
+//   },
+//   {
+//     path: "/thermostat/DEVICE_.*",
+//     alias: "F",
+//     description: "Switch fan Off",
+//     callback: () => actions.nt.setFan(0),
+//   },
+// ]
 
-const rescriptMeta = {
-  docsPat: "/docs(/.*)?",
-}
+// const rescriptMeta = {
+//   docsPat: "/docs(/.*)?",
+// }
 
-maps["rescript-lang.org"] = [
-  // Links / elements
-  {
-    leader: "",
-    alias: "i",
-    description: "Focus search field",
-    path: `(${rescriptMeta.docsPat})?$`,
-    callback: actions.re.focusSearch,
-  },
-  {
-    alias: "a",
-    description: "Open docs link",
-    path: rescriptMeta.docsPat,
-    callback: () => util.createHints("a[href^='/docs/']"),
-  },
+// maps["rescript-lang.org"] = [
+//   // Links / elements
+//   {
+//     leader: "",
+//     alias: "i",
+//     description: "Focus search field",
+//     path: `(${rescriptMeta.docsPat})?$`,
+//     callback: actions.re.focusSearch,
+//   },
+//   {
+//     alias: "a",
+//     description: "Open docs link",
+//     path: rescriptMeta.docsPat,
+//     callback: () => util.createHints("a[href^='/docs/']"),
+//   },
 
-  // Shorcuts
-  {
-    alias: "L",
-    description: "Open language manual",
-    callback: () => actions.openLink("/docs/manual/latest/introduction"),
-  },
-  {
-    alias: "R",
-    description: "Open ReScript + React docs",
-    callback: () => actions.openLink("/docs/react/latest/introduction"),
-  },
-  {
-    alias: "G",
-    description: "Open GenType docs",
-    callback: () => actions.openLink("/docs/gentype/latest/introduction"),
-  },
-  {
-    alias: "P",
-    description: "Open package index",
-    callback: () => actions.openLink("/packages"),
-  },
-  {
-    alias: "Y",
-    description: "Open playground",
-    callback: () => actions.openLink("/try"),
-  },
-  {
-    alias: "S",
-    description: "Open syntax lookup",
-    callback: () => actions.openLink("/syntax-lookup"),
-  },
-  {
-    alias: "F",
-    description: "Open community forum",
-    callback: () => actions.openLink("https://forum.rescript-lang.org/"),
-  },
-  {
-    alias: "A",
-    description: "Open API docs",
-    callback: () => actions.openLink("/docs/manual/latest/api"),
-  },
-  {
-    alias: "J",
-    description: "Open JS API docs",
-    callback: () => actions.openLink("/docs/manual/latest/api/js"),
-  },
-  {
-    alias: "B",
-    description: "Open Belt API docs",
-    callback: () => actions.openLink("/docs/manual/latest/api/belt"),
-  },
-  {
-    alias: "D",
-    description: "Open DOM API docs",
-    callback: () => actions.openLink("/docs/manual/latest/api/dom"),
-  },
+//   // Shorcuts
+//   {
+//     alias: "L",
+//     description: "Open language manual",
+//     callback: () => actions.openLink("/docs/manual/latest/introduction"),
+//   },
+//   {
+//     alias: "R",
+//     description: "Open ReScript + React docs",
+//     callback: () => actions.openLink("/docs/react/latest/introduction"),
+//   },
+//   {
+//     alias: "G",
+//     description: "Open GenType docs",
+//     callback: () => actions.openLink("/docs/gentype/latest/introduction"),
+//   },
+//   {
+//     alias: "P",
+//     description: "Open package index",
+//     callback: () => actions.openLink("/packages"),
+//   },
+//   {
+//     alias: "Y",
+//     description: "Open playground",
+//     callback: () => actions.openLink("/try"),
+//   },
+//   {
+//     alias: "S",
+//     description: "Open syntax lookup",
+//     callback: () => actions.openLink("/syntax-lookup"),
+//   },
+//   {
+//     alias: "F",
+//     description: "Open community forum",
+//     callback: () => actions.openLink("https://forum.rescript-lang.org/"),
+//   },
+//   {
+//     alias: "A",
+//     description: "Open API docs",
+//     callback: () => actions.openLink("/docs/manual/latest/api"),
+//   },
+//   {
+//     alias: "J",
+//     description: "Open JS API docs",
+//     callback: () => actions.openLink("/docs/manual/latest/api/js"),
+//   },
+//   {
+//     alias: "B",
+//     description: "Open Belt API docs",
+//     callback: () => actions.openLink("/docs/manual/latest/api/belt"),
+//   },
+//   {
+//     alias: "D",
+//     description: "Open DOM API docs",
+//     callback: () => actions.openLink("/docs/manual/latest/api/dom"),
+//   },
 
-  // Scroll
-  {
-    leader: "",
-    alias: "w",
-    description: "Scroll sidebar up",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollSidebar("up"),
-  },
-  {
-    leader: "",
-    alias: "s",
-    description: "Scroll sidebar down",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollSidebar("down"),
-  },
-  {
-    leader: "",
-    alias: "e",
-    description: "Scroll sidebar page up",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollSidebar("pageUp"),
-  },
-  {
-    leader: "",
-    alias: "d",
-    description: "Scroll sidebar page down",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollSidebar("pageDown"),
-  },
-  {
-    leader: "",
-    alias: "k",
-    description: "Scroll body up",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollContent("up"),
-  },
-  {
-    leader: "",
-    alias: "j",
-    description: "Scroll body down",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollContent("down"),
-  },
-  {
-    leader: "",
-    alias: "K",
-    description: "Scroll body page up",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollContent("pageUp"),
-  },
-  {
-    leader: "",
-    alias: "J",
-    description: "Scroll body page down",
-    path: rescriptMeta.docsPat,
-    callback: () => actions.re.scrollContent("pageDown"),
-  },
-]
+//   // Scroll
+//   {
+//     leader: "",
+//     alias: "w",
+//     description: "Scroll sidebar up",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollSidebar("up"),
+//   },
+//   {
+//     leader: "",
+//     alias: "s",
+//     description: "Scroll sidebar down",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollSidebar("down"),
+//   },
+//   {
+//     leader: "",
+//     alias: "e",
+//     description: "Scroll sidebar page up",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollSidebar("pageUp"),
+//   },
+//   {
+//     leader: "",
+//     alias: "d",
+//     description: "Scroll sidebar page down",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollSidebar("pageDown"),
+//   },
+//   {
+//     leader: "",
+//     alias: "k",
+//     description: "Scroll body up",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollContent("up"),
+//   },
+//   {
+//     leader: "",
+//     alias: "j",
+//     description: "Scroll body down",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollContent("down"),
+//   },
+//   {
+//     leader: "",
+//     alias: "K",
+//     description: "Scroll body page up",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollContent("pageUp"),
+//   },
+//   {
+//     leader: "",
+//     alias: "J",
+//     description: "Scroll body page down",
+//     path: rescriptMeta.docsPat,
+//     callback: () => actions.re.scrollContent("pageDown"),
+//   },
+// ]
 
 maps["devdocs.io"] = [
   {
@@ -1218,51 +1228,51 @@ maps["devdocs.io"] = [
   },
 ]
 
-maps["ebay.com"] = [
-  {
-    alias: "fs",
-    description: "Fakespot",
-    callback: actions.fakeSpot,
-  },
-]
+// maps["ebay.com"] = [
+//   {
+//     alias: "fs",
+//     description: "Fakespot",
+//     callback: actions.fakeSpot,
+//   },
+// ]
 
-maps["ikea.com"] = [
-  {
-    alias: "d",
-    description: "Toggle Product Details",
-    callback: () => actions.ik.toggleProductDetails(),
-  },
-  {
-    alias: "i",
-    description: "Toggle Product Details",
-    callback: () => actions.ik.toggleProductDetails(),
-  },
-  {
-    alias: "r",
-    description: "Toggle Product Reviews",
-    callback: () => actions.ik.toggleProductReviews(),
-  },
-  {
-    alias: "C",
-    description: "Open Cart page",
-    callback: () => actions.openLink("/us/en/shoppingcart/"),
-  },
-  {
-    alias: "P",
-    description: "Open Profile page",
-    callback: () => actions.openLink("/us/en/profile/login/"),
-  },
-  {
-    alias: "F",
-    description: "Open Favorites page",
-    callback: () => actions.openLink("/us/en/favorites/"),
-  },
-  {
-    alias: "O",
-    description: "Open Orders page",
-    callback: () => actions.openLink("/us/en/customer-service/track-manage-order/"),
-  },
-]
+// maps["ikea.com"] = [
+//   {
+//     alias: "d",
+//     description: "Toggle Product Details",
+//     callback: () => actions.ik.toggleProductDetails(),
+//   },
+//   {
+//     alias: "i",
+//     description: "Toggle Product Details",
+//     callback: () => actions.ik.toggleProductDetails(),
+//   },
+//   {
+//     alias: "r",
+//     description: "Toggle Product Reviews",
+//     callback: () => actions.ik.toggleProductReviews(),
+//   },
+//   {
+//     alias: "C",
+//     description: "Open Cart page",
+//     callback: () => actions.openLink("/us/en/shoppingcart/"),
+//   },
+//   {
+//     alias: "P",
+//     description: "Open Profile page",
+//     callback: () => actions.openLink("/us/en/profile/login/"),
+//   },
+//   {
+//     alias: "F",
+//     description: "Open Favorites page",
+//     callback: () => actions.openLink("/us/en/favorites/"),
+//   },
+//   {
+//     alias: "O",
+//     description: "Open Orders page",
+//     callback: () => actions.openLink("/us/en/customer-service/track-manage-order/"),
+//   },
+// ]
 
 // Baidu
 const BaiduResultSelector = [

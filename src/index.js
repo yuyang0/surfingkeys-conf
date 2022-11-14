@@ -137,7 +137,6 @@ const invokeSalaDict = () => {
   setTimeout(() => {
     let saladict = document.querySelector("div.saladict-panel")
     function _removeSalaDict(e) {
-      // console.log("++++++++", e);
       if (e.key === "Escape") {
         document.querySelector("#saladict-dictpanel-root > div").shadowRoot.querySelector("div.dictPanel-Head button[title='关闭查词面板']").click()
         document.body.removeEventListener("keyup", _removeSalaDict);

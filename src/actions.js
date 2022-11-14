@@ -55,6 +55,11 @@ actions.scrollToHash = (hash = null) => {
 }
 
 actions.siteSearch = (qname, site) => {
+  const siteParam = `site:${site}`
+  actions.toggleParam(qname, siteParam)
+}
+
+actions.toggleParam = (qname, v) => {
   let u
   try {
     u = new URL(window.location.href)
@@ -62,18 +67,16 @@ actions.siteSearch = (qname, site) => {
     return
   }
 
-  const siteParam = `site:${site}`
-
   const q = u.searchParams.get(qname)
   if (!q) {
     return
   }
 
-  const i = q.indexOf(siteParam)
+  const i = q.indexOf(v)
   if (i !== -1) {
-    u.searchParams.set(qname, q.replace(siteParam, ""))
+    u.searchParams.set(qname, q.replace(v, ""))
   } else {
-    u.searchParams.set(qname, `${q} ${siteParam}`)
+    u.searchParams.set(qname, `${q} ${v}`)
   }
 
   actions.openLink(u.href)
@@ -238,6 +241,10 @@ actions.viewGodoc = () => actions.openLink(`https://godoc.org/${util.getURLPath(
 actions.go = {}
 actions.go.siteSearch = (site) => {
   actions.siteSearch("q", site)
+}
+
+actions.go.toggleParam = (v) => {
+  actions.toggleParam("q", v)
 }
 
 actions.go.open = (pageType, q) => {
